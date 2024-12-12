@@ -7,8 +7,13 @@ dotenv.config();
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.on("text", async (ctx) => {
-    const dates = await getBlackouts();
-    ctx.reply(dates)
+    console.log("Text input")
+    try {
+        const dates = await getBlackouts();
+        ctx.reply(dates)
+    } catch (error) {
+        console.log("Error occured ", error.message)
+    }
 })
 
 process.once('SIGINT', () => {
