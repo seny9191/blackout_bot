@@ -8,6 +8,5 @@ RUN npm install
 
 COPY bot.js .
 COPY data.js .
-COPY .env .
 
 CMD [ "node", "bot.js" ]
