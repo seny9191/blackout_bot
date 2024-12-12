@@ -1,9 +1,19 @@
 import puppeteer from "puppeteer";
 
 export async function getBlackouts() {
+
     const url = "https://dp.yasno.com.ua/schedule-turn-off-electricity?utm_source"
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu'
+        ]
+    }
+    );
     const page = await browser.newPage();
 
     await page.goto(url);
