@@ -1,5 +1,6 @@
 import puppeteer from "puppeteer";
 
+
 export async function getBlackouts() {
 
     const url = "https://dp.yasno.com.ua/schedule-turn-off-electricity?utm_source"
@@ -14,21 +15,36 @@ export async function getBlackouts() {
         ]
     }
     );
+
+
+    // const browser = await puppeteer.launch({
+    //     headless: false
+    // }
+    // );
     const page = await browser.newPage();
 
     await page.goto(url);
 
-    const dates = await page.evaluate(() => {
+    const dates = await page.evaluate(async () => {
+        async function waitFor(time) {
+            return new Promise(resolve => setTimeout(resolve, time));
+        }
+
         const group = 3;
 
-        const items = document.querySelectorAll(".schedule-item")
+        const schedule = document.querySelector(".schedule-item")
+
+        const tabs = schedule.getElementsByClassName("schedule-tab")
 
         const days = {};
-        for (const item of items) {
-            const wrap = item.querySelector(".schedule-tabs-wrap");
-            console.log(wrap)
-            const inners = item.querySelectorAll(".inner")
-            console.log(inners)
+
+        for (const tab of tabs) {
+            tab.click();
+
+            await waitFor(50)
+
+            console.log(tab.textContent)
+            const inners = schedule.querySelectorAll(".inner")
 
             const slice = Array.from(inners).slice(group * 24 - 1, (group + 1) * 24 - 1)
 
@@ -48,19 +64,22 @@ export async function getBlackouts() {
                 else {
                     if (end !== -1) {
                         ranges.push([start - 1, end])
-                        start, end = -1;
+                        start = -1;
+                        end = -1;
                     }
                 }
             }
-            days[wrap.textContent.split(" ")[1]] = ranges;
+
+            days[tab.textContent.split(" ")[1]] = ranges;
 
         }
+
         return days;
     })
 
     await browser.close()
 
-
+    console.log(dates)
     return formatTimeRanges(dates);
 }
 
@@ -95,3 +114,6 @@ function formatTimeRanges(timeRangesObj) {
         })
         .join('\n');
 }
+
+// const dates = await getBlackouts()
+// console.log(dates)
