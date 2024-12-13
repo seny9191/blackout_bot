@@ -33,7 +33,7 @@ export async function getBlackouts(group) {
             await waitFor(50)
 
             const inners = schedule.querySelectorAll(".inner")
-            const slice = Array.from(inners).slice(group * 24 - 1, (group + 1) * 24 - 1)
+            const slice = Array.from(inners).slice((group - 1) * 24, (group) * 24 - 1)
 
             const ranges = [];
 
@@ -51,7 +51,7 @@ export async function getBlackouts(group) {
                 }
                 else {
                     if (end !== -1) {
-                        ranges.push([start - 1, end])
+                        ranges.push([start, end+1])
                         start = -1;
                         end = -1;
                     }
