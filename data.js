@@ -14,6 +14,8 @@ export async function getBlackouts(group) {
         ]
     });
 
+    // const browser = await puppeteer.launch({ headless: false })
+
     const page = await browser.newPage();
 
     await page.goto(url);
@@ -33,7 +35,7 @@ export async function getBlackouts(group) {
             await waitFor(50)
 
             const inners = schedule.querySelectorAll(".inner")
-            const slice = Array.from(inners).slice((group - 1) * 24, (group) * 24 - 1)
+            const slice = Array.from(inners).slice((group - 1) * 24, (group) * 24 )
 
             const ranges = [];
 
@@ -51,7 +53,7 @@ export async function getBlackouts(group) {
                 }
                 else {
                     if (end !== -1) {
-                        ranges.push([start, end+1])
+                        ranges.push([start, end + 1])
                         start = -1;
                         end = -1;
                     }
@@ -86,3 +88,6 @@ function formatTimeRanges(timeRangesObj) {
         })
         .join('\n');
 }
+
+const blackouts = await getBlackouts(3);
+console.log(blackouts)
