@@ -35,7 +35,7 @@ export async function getBlackouts(group) {
             await waitFor(50)
 
             const inners = schedule.querySelectorAll(".inner")
-            const slice = Array.from(inners).slice((group - 1) * 24, (group) * 24 )
+            const slice = Array.from(inners).slice((group - 1) * 24, (group) * 24)
 
             const ranges = [];
 
@@ -47,17 +47,17 @@ export async function getBlackouts(group) {
                     if (start === -1) {
                         start = i;
                     }
-                    else {
-                        end = i;
-                    }
+                    end = i;
                 }
-                else {
-                    if (end !== -1) {
-                        ranges.push([start, end + 1])
-                        start = -1;
-                        end = -1;
-                    }
+                else if (start !== -1) {
+                    ranges.push([start, end + 1])
+                    start = -1;
+                    end = -1;
                 }
+            }
+
+            if (start !== -1) {
+                ranges.push([start, end + 1])
             }
 
             days[tab.textContent.split(" ").slice(0, -2).join(" ")] = ranges;
@@ -89,5 +89,5 @@ function formatTimeRanges(timeRangesObj) {
         .join('\n');
 }
 
-const blackouts = await getBlackouts(3);
-console.log(blackouts)
+// const blackouts = await getBlackouts(3);
+// console.log(blackouts)
